@@ -21,7 +21,6 @@ public class JobConfiguration {
 
     @Bean
     public Step step1() {
-        //tasklet based steps
         return stepBuilderFactory.get("step1").tasklet((stepContribution, chunkContext) -> {
             System.out.println("Executing Step1");
             return RepeatStatus.FINISHED;
@@ -50,26 +49,6 @@ public class JobConfiguration {
                 .start(step1())
                 .next(step3())
                 .next(step2())
-                .build();
-    }
-
-    @Bean
-    public Job transitionJobs() {
-        return jobBuilderFactory.get("transitionJob")
-                .start(step1())
-                .on("COMPLETED").to(step2())
-                .from(step2()).on("COMPLETED").to(step3())
-                .from(step3()).end()
-                .build();
-    }
-
-    @Bean
-    public Job transitionJobsToFail() {
-        return jobBuilderFactory.get("transitionJob")
-                .start(step1())
-                .on("COMPLETED").to(step2())
-                .from(step2()).on("COMPLETED").fail()
-                .from(step3()).end()
                 .build();
     }
 }
